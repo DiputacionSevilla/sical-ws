@@ -716,25 +716,6 @@ def _generate_pdf_from_invoice(invoice: dict, parametros: dict) -> io.BytesIO:
         elements.append(tax_table)
         elements.append(Spacer(1, 8))
 
-    # ====== BLOQUE 3c: Forma de Pago ======
-    payment_info = invoice.get("PaymentDetails", {}) or {}
-    if payment_info and (payment_info.get("iban") or payment_info.get("due_date")):
-        elements.append(Paragraph("<b>Forma de Pago</b>", styleN))
-        elements.append(Spacer(1, 4))
-
-        payment_text_parts = []
-        if payment_info.get("means"):
-            payment_text_parts.append(f"<b>Medio:</b> {payment_info['means']}")
-        if payment_info.get("due_date"):
-            payment_text_parts.append(f"<b>Vencimiento:</b> {payment_info['due_date']}")
-        if payment_info.get("amount"):
-            payment_text_parts.append(f"<b>Importe:</b> {payment_info['amount']} €")
-        if payment_info.get("iban"):
-            payment_text_parts.append(f"<b>IBAN:</b> {payment_info['iban']}")
-
-        payment_paragraph = Paragraph(" &nbsp;|&nbsp; ".join(payment_text_parts), styleN)
-        elements.append(payment_paragraph)
-        elements.append(Spacer(1, 8))
 
     # ====== BLOQUE 4+5 (FOOTER): Totales y Firma ======
     # Forzamos salto al frame del pie
@@ -810,7 +791,27 @@ def _generate_pdf_from_invoice(invoice: dict, parametros: dict) -> io.BytesIO:
             ('BOTTOMPADDING', (0,0), (-1,-1), 0),
         ]))
         elements.append(KeepTogether([totals_table]))
-        elements.append(Spacer(1, 6))
+        elements.append(Spacer(1, 8))
+
+        # ====== BLOQUE 3c: Forma de Pago (Movido al footer) ======
+        payment_info = invoice.get("PaymentDetails", {}) or {}
+        if payment_info and (payment_info.get("iban") or payment_info.get("due_date")):
+            elements.append(Paragraph("<b>Forma de Pago</b>", styleN))
+            elements.append(Spacer(1, 4))
+
+            payment_text_parts = []
+            if payment_info.get("means"):
+                payment_text_parts.append(f"<b>Medio:</b> {payment_info['means']}")
+            if payment_info.get("due_date"):
+                payment_text_parts.append(f"<b>Vencimiento:</b> {payment_info['due_date']}")
+            if payment_info.get("amount"):
+                payment_text_parts.append(f"<b>Importe:</b> {payment_info['amount']} €")
+            if payment_info.get("iban"):
+                payment_text_parts.append(f"<b>IBAN:</b> {payment_info['iban']}")
+
+            payment_paragraph = Paragraph(" &nbsp;|&nbsp; ".join(payment_text_parts), styleN)
+            elements.append(payment_paragraph)
+            elements.append(Spacer(1, 8))
 
     # -- Firma electrónica --
     firma = invoice.get("Firma", {})
