@@ -1,0 +1,58 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+ENV/
+env/
+.venv/
+
+# Entorno
+.env
+.env.*
+!.env.example
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Documentación y archivos no necesarios
+*.md
+*.pdf
+!README.md
+
+# Archivos de ejemplo y pruebas
+ejemplos-face/
+
+# Archivos obsoletos (renombrados con 1)
+*1.py
+core/*1.py
+
+# Claude
+.claude/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+
+# Archivos de despliegue duplicados
+*.zip

@@ -1,0 +1,95 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Entornos virtuales
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Configuración sensible
+.env
+*.env
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos temporales
+*.tmp
+*.bak
+*.cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Archivos de Streamlit
+.streamlit/secrets.toml
+
+# Archivos de Oracle
+*.dmp
+*.log
+
+# Archivos de sistema
+Thumbs.db
+desktop.ini
+
+# Archivos de backup
+archive/
+backup/
+*.backup
+
+# Archivos obsoletos (Streamlit/Oracle)
+app1.py
+core/*1.py
+empresas.csv
+start.bat
+
+# Archivos de documentación interna
+CLAUDE.md
+GEMINI.md
+.claude/
+.mcp.json
+
+# Archivos de ejemplo/referencia
+ejemplos-face/
+*.pdf
+!images/*.png
+acta-conformidad-despliegue.zip
+CHANGELOG.md
+DESPLIEGUE_PRODUCCION.md
+VERIFICACION.md
+.github/

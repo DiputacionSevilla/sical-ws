@@ -1,0 +1,20 @@
+# API REST
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.9
+pydantic>=2.0.0
+
+# PDF Generation
+reportlab==4.2.0
+
+# Firma digital
+cryptography==43.0.0
+
+# Utilidades
+python-dateutil==2.9.0
+pytz==2024.1
+python-dotenv==1.0.0
+
+# Testing (desarrollo)
+pytest==7.4.3
+pytest-mock==3.12.0
