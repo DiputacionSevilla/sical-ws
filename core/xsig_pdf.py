@@ -384,13 +384,30 @@ def _extract_invoice_data_from_xml(xml_root: ET.Element) -> dict:
                 except Exception:
                     periodo_linea = f"{lp_start}–{lp_end}"
 
+            # Cargos y Descuentos a nivel de línea
+            line_charges = []
+            for c in line.findall(".//Charges/Charge"):
+                line_charges.append({
+                    "reason": (c.findtext("ChargeReason", default="") or "Cargo").strip(),
+                    "amount": (c.findtext("ChargeAmount", default="0") or "0").strip()
+                })
+            
+            line_discounts = []
+            for d in line.findall(".//Discounts/Discount"):
+                line_discounts.append({
+                    "reason": (d.findtext("DiscountReason", default="") or "Dcto.").strip(),
+                    "amount": (d.findtext("DiscountAmount", default="0") or "0").strip()
+                })
+
             items.append({
                 "Descripción": description,
                 "Cantidad": quantity,
                 "Precio Unitario": unit_price,
                 "Importe": total_cost,
                 "Observaciones": obs,
-                "Periodo": periodo_linea
+                "Periodo": periodo_linea,
+                "Cargos": line_charges,
+                "Descuentos": line_discounts
             })
 
     data = {
@@ -580,6 +597,7 @@ def _generate_pdf_from_invoice(invoice: dict, parametros: dict) -> io.BytesIO:
                 extra_lines.append(f"({obs_text})")
             if periodo_text:
                 extra_lines.append(f"(Periodo: {periodo_text})")
+            
             if extra_lines:
                 desc_text = desc_text + "\n" + "\n".join(extra_lines)
 
@@ -600,6 +618,38 @@ def _generate_pdf_from_invoice(invoice: dict, parametros: dict) -> io.BytesIO:
         ]))
         elements.append(table_items)
         elements.append(Spacer(1, 12))
+
+        # ====== BLOQUE 3.1: CARGOS (Nueva tabla separada) ======
+        all_charges = []
+        for itm in items:
+            all_charges.extend(itm.get("Cargos", []))
+        
+        if all_charges:
+            elements.append(Paragraph("<u><b><i>CARGOS</i></b></u>", styleN))
+            elements.append(Spacer(1, 4))
+            
+            charge_data = [[
+                Paragraph("CONCEPTO", header_cell_style),
+                Paragraph("TIPO (%)", header_cell_style),
+                Paragraph("IMPORTE", header_cell_style)
+            ]]
+            for c in all_charges:
+                charge_data.append([
+                    Paragraph(c['reason'], table_cell_style),
+                    Paragraph("-", header_cell_style),
+                    Paragraph(_fmt(c.get('amount', 0), "{:.2f}"), right_align_style)
+                ])
+            
+            c_col_widths = [doc.width * 0.70, doc.width * 0.15, doc.width * 0.15]
+            table_charges = Table(charge_data, colWidths=c_col_widths)
+            table_charges.setStyle(TableStyle([
+                ('BOX', (0,0), (-1,-1), 1, colors.black),
+                ('INNERGRID', (0,0), (-1,-1), 0.5, colors.grey),
+                ('BACKGROUND', (0,0), (-1,0), green_fill),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ]))
+            elements.append(table_charges)
+            elements.append(Spacer(1, 12))
     else:
         elements.append(Paragraph("No hay conceptos en la factura.", styleN))
         elements.append(Spacer(1, 12))
