@@ -658,7 +658,17 @@ def _generate_pdf_from_invoice(invoice: dict, parametros: dict) -> io.BytesIO:
     taxes_output_details = invoice.get("TaxesOutputDetails", []) or []
     TAX_TYPE_MAP = {"01": "IVA", "02": "IGIC", "03": "IPSI", "04": "IRPF", "05": "Otros"}
 
-    if len(taxes_output_details) > 0:
+    # Filtramos para ver si hay algún importe distinto de cero
+    has_tax_amounts = False
+    for t in taxes_output_details:
+        try:
+            if float(t.get("amount", 0) or 0) != 0:
+                has_tax_amounts = True
+                break
+        except Exception:
+            continue
+
+    if len(taxes_output_details) > 0 and has_tax_amounts:
         elements.append(Paragraph("<b>Desglose de Impuestos</b>", styleN))
         elements.append(Spacer(1, 4))
 
