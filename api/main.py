@@ -455,7 +455,7 @@ def api_generar_informe(req: InformeWSPayload):
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
-            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+            headers={"Content-Disposition": f'inline; filename="{filename}"'}
         )
     except ValueError as e:
         logger.warning(f"/api/informe bad request: {e}")
@@ -512,7 +512,7 @@ async def api_xml_a_pdf(
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
-            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+            headers={"Content-Disposition": f'inline; filename="{filename}"'}
         )
     except HTTPException:
         raise
@@ -538,7 +538,7 @@ def api_factura_resumen(payload: Dict[str, Any] | 'FacturaResumenPayload'):
         pdf_bytes = generate_resumen_factura_pdf(data)
         numero = data.get("factura", {}).get("numero", "sin_numero")
         filename = data.get("filename") or f"Resumen_{numero}.pdf"
-        headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+        headers = {"Content-Disposition": f'inline; filename="{filename}"'}
         return StreamingResponse(io.BytesIO(pdf_bytes), media_type="application/pdf", headers=headers)
     except Exception as e:
         logger.exception(f"/api/factura internal error: {e}")
@@ -581,7 +581,7 @@ def api_datosfactura_json(payload: DatosFacturaPayload):
         return StreamingResponse(
             io.BytesIO(pdf_io.getvalue()),
             media_type="application/pdf",
-            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+            headers={"Content-Disposition": f'inline; filename="{filename}"'}
         )
     except Exception as e:
         logger.exception("/api/datosfactura internal error")
